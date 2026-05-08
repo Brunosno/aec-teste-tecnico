@@ -1,0 +1,69 @@
+@model AecTesteTecnico.ViewModels.RegisterViewModel;
+
+@{
+    ViewData["Title"] = "Criar conta";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Criar conta — Restaurante</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+
+<div class="auth-wrap animate-in">
+    <div class="auth-card">
+
+        <div class="auth-logo">
+            <span>R</span>estaurante
+        </div>
+        <p class="auth-tagline">Crie sua conta gratuitamente</p>
+
+        <form asp-action="Register" method="post">
+
+            <div asp-validation-summary="All"></div>
+
+            <div class="field-row">
+                <label class="form-label">Nome</label>
+                <input asp-for="Name" class="form-control" placeholder="Seu nome completo" autocomplete="name" />
+                <span asp-validation-for="Name" class="field-error"></span>
+            </div>
+
+            <div class="field-row">
+                <label class="form-label">Username</label>
+                <input asp-for="UserName" class="form-control" placeholder="nome de usuário" autocomplete="username" />
+                <span asp-validation-for="UserName" class="field-error"></span>
+            </div>
+
+            <div class="field-row">
+                <label class="form-label">Email</label>
+                <input asp-for="Email" class="form-control" placeholder="seu@email.com" autocomplete="email" />
+                <span asp-validation-for="Email" class="field-error"></span>
+            </div>
+
+            <div class="field-row">
+                <label class="form-label">Senha</label>
+                <input asp-for="Password" type="password" class="form-control" placeholder="••••••••" autocomplete="new-password" />
+                <span asp-validation-for="Password" class="field-error"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full mt-2">Criar conta</button>
+
+        </form>
+
+        <p class="auth-footer">
+            Já tem conta? <a asp-action="Login">Entrar</a>
+        </p>
+
+    </div>
+</div>
+
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<partial name="_ValidationScriptsPartial" />
+</body>
+</html>

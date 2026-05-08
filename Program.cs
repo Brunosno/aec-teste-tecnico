@@ -1,6 +1,8 @@
 using AecTesteTecnico.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using AecTesteTecnico.Models;
+using AecTesteTecnico.Services;
 using Minio;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,7 +26,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Identity
 // ======================
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
     options.Password.RequireDigit = false;
     options.Password.RequireUppercase = false;
@@ -32,6 +34,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequiredLength = 6;
 })
+.AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
 
@@ -44,6 +47,8 @@ builder.Services.AddControllersWithViews();
 // ======================
 // MinIO
 // ======================
+
+builder.Services.AddScoped<MinioService>();
 
 builder.Services.AddMinio(configureClient => configureClient
     .WithEndpoint(builder.Configuration["Minio:Endpoint"])
@@ -62,6 +67,13 @@ var app = builder.Build();
 // ======================
 // HTTP Pipeline
 // ======================
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var db = services.GetRequiredService<AppDbContext>();
+    await db.Database.MigrateAsync();
+    await SeedData.Initialize(services);
+}
 
 if (!app.Environment.IsDevelopment())
 {
@@ -89,7 +101,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Account}/{action=Login}/{id?}");
 
 app.MapRazorPages();
 

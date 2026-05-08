@@ -1,4 +1,4 @@
-namespace aec_teste_tecnico.Models;
+namespace AecTesteTecnico.Models;
 
 public class ErrorViewModel
 {

@@ -1,0 +1,121 @@
+@model AecTesteTecnico.ViewModels.LoginViewModel;
+
+@{
+    ViewData["Title"] = "Entrar";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Entrar — Restaurante</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+
+<div class="auth-wrap animate-in">
+    <div class="auth-card">
+
+        <div class="auth-logo">
+            <span>R</span>estaurante
+        </div>
+        <p class="auth-tagline">Entre na sua conta para continuar</p>
+
+        <form asp-action="Login" method="post">
+
+            <div asp-validation-summary="All" class="validation-summary-errors" style="display:none"></div>
+            <div asp-validation-summary="All"></div>
+
+            <div class="field-row">
+                <label class="form-label">Usuário</label>
+                <input asp-for="UserName"
+                       class="form-control"
+                       placeholder="seu usuário"
+                       autocomplete="username" />
+                <span asp-validation-for="UserName" class="field-error"></span>
+            </div>
+
+            <div class="field-row">
+                <label class="form-label">Senha</label>
+
+                <div style="position:relative;">
+                    <input asp-for="Password"
+                           id="passwordInput"
+                           type="password"
+                           class="form-control"
+                           placeholder="••••••••"
+                           autocomplete="current-password" />
+
+                    <button type="button"
+                            onclick="togglePassword()"
+                            style="
+                                position:absolute;
+                                right:10px;
+                                top:50%;
+                                transform:translateY(-50%);
+                                background:none;
+                                border:none;
+                                cursor:pointer;
+                                color:var(--fg-3);
+                            ">
+                        <i id="eyeIcon" data-lucide="eye"></i>
+                    </button>
+                </div>
+
+                <span asp-validation-for="Password" class="field-error"></span>
+            </div>
+
+            <div class="field-row">
+                <label class="check-row">
+                    <input asp-for="RememberMe" type="checkbox" />
+                    Lembrar de mim
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full mt-2">Entrar</button>
+
+        </form>
+
+        <p class="auth-footer">
+            Não tem conta? <a asp-action="Register">Criar conta</a>
+        </p>
+
+    </div>
+</div>
+
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<partial name="_ValidationScriptsPartial" />
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+<script>
+    function togglePassword() {
+        const input = document.getElementById("passwordInput");
+        const icon = document.getElementById("eyeIcon");
+
+        if (input.type === "password") {
+            input.type = "text";
+            icon.setAttribute("data-lucide", "eye-off");
+        } else {
+            input.type = "password";
+            icon.setAttribute("data-lucide", "eye");
+        }
+
+        lucide.createIcons();
+    }
+
+    lucide.createIcons();
+</script>
+
+<style>
+    button:hover {
+        color: var(--fg);
+    }
+</style>
+
+</body>
+</html>

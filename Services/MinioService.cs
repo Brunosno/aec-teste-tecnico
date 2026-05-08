@@ -12,8 +12,12 @@ public class MinioService
     public MinioService(IMinioClient minioClient, IConfiguration config)
     {
         _minioClient = minioClient;
-        _endpoint = config["Minio:Endpoint"];
-        _bucket = config["Minio:Bucket"];
+
+        _bucket = config["Minio:Bucket"]
+            ?? throw new Exception("Bucket não configurado");
+
+        _endpoint = config["Minio:Endpoint"]
+            ?? throw new Exception("Endpoint não configurado");
     }
 
     private async Task EnsureBucketExistsAsync()

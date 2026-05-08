@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using aec_teste_tecnico.Models;
+using AecTesteTecnico.Models;
 
 namespace aec_teste_tecnico.Controllers;
 
