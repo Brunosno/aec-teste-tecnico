@@ -212,8 +212,7 @@ Após iniciar a aplicação, ela estará disponível em:
 
 | Ambiente | URL |
 |---|---|
-| HTTP | http://localhost:5193 |
-| HTTPS | https://localhost:7068 |
+| HTTP | http://localhost:5067 |
 
 ---
 
