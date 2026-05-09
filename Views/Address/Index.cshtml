@@ -1,0 +1,75 @@
+@model List<AecTesteTecnico.Models.Address>
+
+@{
+    Layout = "~/Views/Shared/_AccountLayout.cshtml";
+}
+
+<div class="page-header d-flex align-items-end justify-content-between animate-in">
+    <div>
+        <h1 class="page-title">Endereços</h1>
+        <p class="page-subtitle">Gerencie seus endereços de entrega</p>
+    </div>
+
+    <a asp-action="Create" class="btn btn-primary btn-sm">
+        + Novo endereço
+    </a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="empty-state animate-in">
+        <i data-lucide="map-pin" class="empty-icon-svg"></i>
+
+        <p class="empty-state-text">
+            Nenhum endereço cadastrado.
+        </p>
+
+        <a asp-action="Create" class="btn btn-primary mt-3">
+            Adicionar endereço
+        </a>
+    </div>
+}
+else
+{
+    <div class="row g-3 stagger">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-6">
+                <div class="grid-card">
+
+                    <div class="grid-card-action">
+                        <a asp-action="Delete"
+                           asp-route-id="@item.Id"
+                           class="btn btn-danger btn-sm">
+                            ✕
+                        </a>
+                    </div>
+
+                    <div class="grid-card-title">
+                        @item.Street, @item.Number
+                    </div>
+
+                    <div class="grid-card-line">
+                        @item.Neighborhood
+                    </div>
+
+                    @if (!string.IsNullOrWhiteSpace(item.Complement))
+                    {
+                        <div class="grid-card-sub">
+                            Complemento: @item.Complement
+                        </div>
+                    }
+
+                    <div class="grid-card-sub">
+                        @item.City - @item.Uf
+                    </div>
+
+                    <div class="grid-card-meta">
+                        CEP: @item.ZipCode
+                    </div>
+
+                </div>
+            </div>
+        }
+    </div>
+}

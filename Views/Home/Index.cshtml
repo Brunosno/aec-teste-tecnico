@@ -107,12 +107,12 @@
     @if (user != null && User.IsInRole("ADMIN"))
     {
         <h1 class="home-hero-title">Olá, <em>@user.Name</em></h1>
-        <p class="home-hero-sub">Gerencie o cardápio, acompanhe relatórios e configure as sugestões do chef.</p>
+        <p class="home-hero-sub">Gerencie os usuários do seu sistema e veja os relatórios de enreços cardastrados.</p>
     }
     else if (user != null)
     {
         <h1 class="home-hero-title">Olá, <em>@user.Name</em></h1>
-        <p class="home-hero-sub">Faça um pedido, reserve uma mesa ou explore nosso cardápio.</p>
+        <p class="home-hero-sub">Deixe-nos mais próximos de você, cadastre seu endereço para podermos te encontrar.</p>
     }
     else
     {
@@ -132,7 +132,7 @@
         <a asp-controller="Address" asp-action="Manage" class="nav-card">
             <i data-lucide="home" class="nav-card-icon-svg"></i>
             <span class="nav-card-title">Gerenciar Endereços</span>
-            <span class="nav-card-desc">Adicione, edite ou remova pratos do cardápio.</span>
+            <span class="nav-card-desc">Adicione, edite ou remova endereços.</span>
             <span class="nav-card-arrow">Abrir gestão →</span>
         </a>
 
