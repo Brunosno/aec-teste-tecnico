@@ -28,6 +28,22 @@ public class AccountController : Controller
         if (!ModelState.IsValid)
             return View(model);
 
+        var existingUser = await _userManager.FindByNameAsync(model.UserName);
+
+        if (existingUser != null)
+        {
+            ModelState.AddModelError("UserName", "Este nome de usuário já existe.");
+            return View(model);
+        }
+
+        var existingEmail = await _userManager.FindByEmailAsync(model.Email);
+
+        if (existingEmail != null)
+        {
+            ModelState.AddModelError("Email", "Este email já está em uso.");
+            return View(model);
+        }
+
         var user = new ApplicationUser
         {
             UserName = model.UserName,
@@ -89,7 +105,7 @@ public class AccountController : Controller
 
         if (result.Succeeded)
         {
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Profile");
         }
 
         ModelState.AddModelError("", "Usuário ou senha inválidos");

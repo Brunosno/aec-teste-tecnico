@@ -1,0 +1,27 @@
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="account-wrapper">
+
+    <aside class="account-sidebar">
+        <div class="account-sidebar-heading">Minha Conta</div>
+
+        <a asp-controller="Profile" asp-action="Index"
+           class="account-sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Profile" ? "active" : "")">
+            Perfil
+        </a>
+
+        <a asp-controller="Address" asp-action="Index"
+           class="account-sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Address" ? "active" : "")">
+            Endereços
+        </a>
+    </aside>
+
+    <div class="account-content">
+        @RenderBody()
+    </div>
+
+</div>
+
+@RenderSection("Scripts", required: false)

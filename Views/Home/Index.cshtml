@@ -1,8 +1,167 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@using Microsoft.AspNetCore.Identity;
+@using AecTesteTecnico.Models;
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Home";
+
+    var user = User.Identity.IsAuthenticated
+        ? await UserManager.GetUserAsync(User)
+        : null;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<style>
+    .home-hero {
+        padding: 3rem 0 2.5rem;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 2.5rem;
+    }
+
+    .home-hero-eyebrow {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--accent);
+        margin-bottom: 0.75rem;
+    }
+
+    .home-hero-title {
+        font-family: var(--font-display);
+        font-size: clamp(1.875rem, 4vw, 2.75rem);
+        font-weight: 700;
+        color: var(--fg);
+        line-height: 1.2;
+        margin-bottom: 0.75rem;
+    }
+
+    .home-hero-title em {
+        font-style: italic;
+        color: var(--accent);
+    }
+
+    .home-hero-sub {
+        font-size: 0.9375rem;
+        color: var(--fg-3);
+        max-width: 480px;
+        line-height: 1.6;
+    }
+
+    .nav-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 0.875rem;
+    }
+
+    .nav-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--r-lg);
+        padding: 1.375rem 1.5rem;
+        text-decoration: none !important;
+        color: var(--fg) !important;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        transition: border-color var(--t-slow), background var(--t-slow), transform var(--t-slow);
+        cursor: pointer;
+    }
+
+    .nav-card:hover {
+        border-color: var(--accent-border);
+        background: var(--card-hover);
+        transform: translateY(-2px);
+    }
+
+    .nav-card-icon {
+        font-size: 1.25rem;
+        line-height: 1;
+    }
+
+    .nav-card-title {
+        font-size: 0.9375rem;
+        font-weight: 600;
+        color: var(--fg);
+    }
+
+    .nav-card-desc {
+        font-size: 0.8125rem;
+        color: var(--fg-3);
+        line-height: 1.45;
+    }
+
+    .nav-card-arrow {
+        margin-top: auto;
+        font-size: 0.75rem;
+        color: var(--fg-4);
+        padding-top: 0.75rem;
+    }
+</style>
+
+<div class="home-hero animate-in">
+    <div class="home-hero-eyebrow">
+        @if (User.IsInRole("ADMIN")) { <text>Painel Administrativo</text> }
+        else { <text>Bem-vindo</text> }
+    </div>
+
+    @if (user != null && User.IsInRole("ADMIN"))
+    {
+        <h1 class="home-hero-title">Olá, <em>@user.Name</em></h1>
+        <p class="home-hero-sub">Gerencie o cardápio, acompanhe relatórios e configure as sugestões do chef.</p>
+    }
+    else if (user != null)
+    {
+        <h1 class="home-hero-title">Olá, <em>@user.Name</em></h1>
+        <p class="home-hero-sub">Faça um pedido, reserve uma mesa ou explore nosso cardápio.</p>
+    }
+    else
+    {
+        <h1 class="home-hero-title">Experiência<br><em>gastronômica</em></h1>
+        <p class="home-hero-sub">Faça pedidos, reserve mesas e viva a melhor culinária da cidade.</p>
+        <div class="d-flex gap-2 mt-3">
+            <a asp-controller="Account" asp-action="Login" class="btn btn-primary">Entrar</a>
+            <a asp-controller="Account" asp-action="Register" class="btn btn-secondary">Criar conta</a>
+        </div>
+    }
+</div>
+
+<div class="nav-grid stagger">
+
+    @if (User.IsInRole("ADMIN"))
+    {
+        <a asp-controller="Address" asp-action="Manage" class="nav-card">
+            <i data-lucide="home" class="nav-card-icon-svg"></i>
+            <span class="nav-card-title">Gerenciar Endereços</span>
+            <span class="nav-card-desc">Adicione, edite ou remova pratos do cardápio.</span>
+            <span class="nav-card-arrow">Abrir gestão →</span>
+        </a>
+
+        <a asp-controller="User" asp-action="Index" class="nav-card">
+            <i data-lucide="user" class="nav-card-icon-svg"></i>
+            <span class="nav-card-title">Gerenciar Usuários</span>
+            <span class="nav-card-desc">Gerencie todos os usuários cadastrados no seu sistema.</span>
+            <span class="nav-card-arrow">Ver usários →</span>
+        </a>
+    }
+    else
+    {
+        @if (User.Identity.IsAuthenticated)
+        {
+
+            <a asp-controller="Profile" asp-action="Index" class="nav-card">
+                <i data-lucide="user" class="nav-card-icon-svg"></i>
+                <span class="nav-card-title">Meu Perfil</span>
+                <span class="nav-card-desc">Atualize seus dados, endereços e preferências.</span>
+                <span class="nav-card-arrow">Editar perfil →</span>
+            </a>
+
+            <a asp-controller="Address" asp-action="Index" class="nav-card">
+                <i data-lucide="home" class="nav-card-icon-svg"></i>
+                <span class="nav-card-title">Endereços</span>
+                <span class="nav-card-desc">Cadastre aqui seus endereços para nos deixar mais perto de você.</span>
+                <span class="nav-card-arrow">Ver endereços →</span>
+            </a>
+        }
+    }
+
 </div>
