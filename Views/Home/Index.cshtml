@@ -129,14 +129,8 @@
 
     @if (User.IsInRole("ADMIN"))
     {
-        <a asp-controller="Address" asp-action="Manage" class="nav-card">
-            <i data-lucide="home" class="nav-card-icon-svg"></i>
-            <span class="nav-card-title">Gerenciar Endereços</span>
-            <span class="nav-card-desc">Adicione, edite ou remova endereços.</span>
-            <span class="nav-card-arrow">Abrir gestão →</span>
-        </a>
 
-        <a asp-controller="User" asp-action="Index" class="nav-card">
+        <a asp-controller="User" asp-action="Manage" class="nav-card">
             <i data-lucide="user" class="nav-card-icon-svg"></i>
             <span class="nav-card-title">Gerenciar Usuários</span>
             <span class="nav-card-desc">Gerencie todos os usuários cadastrados no seu sistema.</span>

@@ -1,0 +1,272 @@
+@model IEnumerable<(AecTesteTecnico.Models.ApplicationUser User, IList<string> Roles)>
+
+@{
+    ViewData["Title"] = "Usuários";
+}
+
+<div class="page-header animate-in">
+
+    <div>
+        <h1 class="page-title">Usuários</h1>
+
+        <p class="page-subtitle">
+            Gerenciamento de contas do sistema
+        </p>
+    </div>
+
+</div>
+
+<!-- =========================================
+     SEARCH
+========================================= -->
+
+<div class="card-section animate-in" style="animation-delay:60ms">
+
+    <div class="card-section-header mb-4">
+        <span class="card-section-title">
+            Buscar usuários
+        </span>
+    </div>
+
+    <form method="get">
+
+        <div class="row g-3 align-items-end">
+
+            <div class="col-md-10">
+
+                <input type="text"
+                       name="search"
+                       class="form-control"
+                       placeholder="Nome ou email..."
+                       value="@ViewBag.Search" />
+
+            </div>
+
+            <div class="col-md-2">
+
+                <button type="submit"
+                        class="btn btn-primary btn-full">
+
+                    <i data-lucide="search"></i>
+                    Buscar
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+<!-- =========================================
+     USERS LIST
+========================================= -->
+
+<div class="card-section animate-in"
+     style="animation-delay:100ms">
+
+    <div class="card-section-header users-header">
+
+        <div>
+
+            <span class="card-section-title">
+                Lista de usuários
+            </span>
+
+            <p class="users-counter">
+                @Model.Count() usuário(s) encontrado(s)
+            </p>
+
+        </div>
+
+        <a asp-controller="Address"
+           asp-action="ExportCsvs"
+           class="btn btn-export">
+
+            <i data-lucide="download"></i>
+            Exportar CSV
+
+        </a>
+
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+
+            <i data-lucide="users"
+               class="empty-icon-svg"></i>
+
+            <p class="empty-state-text">
+                Nenhum usuário encontrado.
+            </p>
+
+        </div>
+    }
+    else
+    {
+        <div class="users-grid stagger">
+
+            @foreach (var item in Model)
+            {
+                var u = item.User;
+                var roles = item.Roles;
+
+                var isLocked =
+                    u.LockoutEnd != null &&
+                    u.LockoutEnd > DateTimeOffset.Now;
+
+                <div class="grid-card">
+
+                    <!-- =========================================
+                         USER CONTENT
+                    ========================================= -->
+
+                    <div class="grid-card-content">
+
+                        <!-- TOP -->
+
+                        <div class="grid-card-top">
+
+                            <div class="grid-card-avatar">
+
+                                @u.UserName?.Substring(0, 1).ToUpper()
+
+                            </div>
+
+                            <div class="grid-card-user">
+
+                                <h3 class="grid-card-title">
+                                    @u.UserName
+                                </h3>
+
+                                <div class="grid-card-line">
+
+                                    <i data-lucide="mail"></i>
+
+                                    <span>
+                                        @u.Email
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- BADGES -->
+
+                        <div class="grid-card-meta">
+
+                            @foreach (var role in roles)
+                            {
+                                <span class="badge-r badge-accent">
+                                    @role
+                                </span>
+                            }
+
+                            @if (isLocked)
+                            {
+                                <span class="badge-r badge-danger">
+                                    Bloqueado
+                                </span>
+                            }
+
+                        </div>
+
+                    </div>
+
+                    <!-- =========================================
+                         ACTIONS
+                    ========================================= -->
+
+                    <div class="grid-card-actions">
+
+                        <!-- ADMIN -->
+
+                        @{
+                            var isAdmin = roles.Contains("ADMIN");
+                        }
+
+                        <form asp-action="ToggleAdmin"
+                            method="post">
+
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden"
+                                name="id"
+                                value="@u.Id" />
+
+                            <button type="submit"
+                                    class="action-btn @(isAdmin ? "admin-active" : "admin")"
+                                    title="@(isAdmin ? "Remover administrador" : "Tornar administrador")">
+
+                                <i data-lucide="shield"></i>
+
+                            </button>
+
+                        </form>
+
+                        <!-- LOCK -->
+
+                        <form asp-action="ToggleLock"
+                              method="post">
+
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden"
+                                   name="id"
+                                   value="@u.Id" />
+
+                            <button class="action-btn lock"
+                                    title="Bloquear usuário">
+
+                                <i data-lucide="lock"></i>
+
+                            </button>
+
+                        </form>
+
+                        <!-- DETAILS -->
+
+                        <a asp-action="Details"
+                           asp-route-id="@u.Id"
+                           class="action-btn details"
+                           title="Detalhes">
+
+                            <i data-lucide="eye"></i>
+
+                        </a>
+
+                        <!-- DELETE -->
+
+                        <form asp-action="Delete"
+                              method="post"
+                              onsubmit="return confirm('Deseja realmente excluir este usuário?');">
+
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden"
+                                   name="id"
+                                   value="@u.Id" />
+
+                            <button class="action-btn delete"
+                                    title="Remover usuário">
+
+                                <i data-lucide="trash-2"></i>
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+
+</div>

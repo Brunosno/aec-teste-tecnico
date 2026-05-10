@@ -1,0 +1,86 @@
+@model AecTesteTecnico.ViewModels.AddressViewModel
+
+@{
+    Layout = "~/Views/Shared/_AccountLayout.cshtml";
+}
+
+<div class="page-header animate-in">
+    <div>
+        <h1 class="page-title">Editar endereço</h1>
+
+        <p class="page-subtitle">
+            Atualize as informações do endereço
+        </p>
+    </div>
+</div>
+
+<div class="card-section animate-in">
+
+    <form asp-action="Edit" method="post">
+
+        @Html.AntiForgeryToken()
+
+        <div class="form-grid">
+
+            <div class="field-row">
+                <label class="form-label">CEP</label>
+                <input asp-for="ZipCode"
+                       class="form-control" />
+            </div>
+
+            <div class="field-row">
+                <label class="form-label">Rua</label>
+                <input asp-for="Street"
+                       class="form-control" />
+            </div>
+
+            <div class="field-row">
+                <label class="form-label">Número</label>
+                <input asp-for="Number"
+                       class="form-control" />
+            </div>
+
+            <div class="field-row">
+                <label class="form-label">
+                    Complemento
+                </label>
+
+                <input asp-for="Complement"
+                       class="form-control" />
+            </div>
+
+            <div class="field-row">
+                <label class="form-label">Bairro</label>
+                <input asp-for="Neighborhood"
+                       class="form-control" />
+            </div>
+
+            <div class="field-row">
+                <label class="form-label">Cidade</label>
+                <input asp-for="City"
+                       class="form-control" />
+            </div>
+
+            <div class="field-row">
+                <label class="form-label">UF</label>
+                <input asp-for="Uf"
+                       class="form-control" />
+            </div>
+
+        </div>
+
+        <div class="form-actions">
+            <button type="submit"
+                    class="btn btn-primary">
+                Salvar alterações
+            </button>
+
+            <a asp-action="Index"
+               class="btn btn-secondary">
+                Cancelar
+            </a>
+        </div>
+
+    </form>
+
+</div>

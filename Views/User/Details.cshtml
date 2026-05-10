@@ -1,0 +1,49 @@
+@model AecTesteTecnico.Models.ApplicationUser
+
+@{
+    ViewData["Title"] = "Detalhes do Usuário";
+    var roles = ViewBag.Roles as IList<string>;
+}
+
+<div class="page-header animate-in">
+    <h1 class="page-title">Detalhes do Usuário</h1>
+    <p class="page-subtitle">Informações da conta</p>
+</div>
+
+<div class="card-section animate-in" style="animation-delay:60ms">
+
+    <div class="grid-card">
+
+        <div class="grid-card-title">
+            @Model.UserName
+        </div>
+
+        <div class="grid-card-line">
+            <strong>Email:</strong> @Model.Email
+        </div>
+
+        <div class="grid-card-line">
+            <strong>ID:</strong> @Model.Id
+        </div>
+
+        <div class="grid-card-line">
+            <strong>Telefone:</strong> @Model.PhoneNumber
+        </div>
+
+        <div class="grid-card-meta">
+            @if (roles != null)
+            {
+                foreach (var role in roles)
+                {
+                    <span class="badge-r badge-accent">@role</span>
+                }
+            }
+        </div>
+
+    </div>
+
+</div>
+
+<div class="card-section animate-in" style="animation-delay:100ms">
+    <a asp-action="Manage" class="btn btn-secondary">Voltar</a>
+</div>
