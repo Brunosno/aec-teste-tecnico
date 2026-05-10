@@ -16,10 +16,6 @@
 
 </div>
 
-<!-- =========================================
-     SEARCH
-========================================= -->
-
 <div class="card-section animate-in" style="animation-delay:60ms">
 
     <div class="card-section-header mb-4">
@@ -59,10 +55,6 @@
     </form>
 
 </div>
-
-<!-- =========================================
-     USERS LIST
-========================================= -->
 
 <div class="card-section animate-in"
      style="animation-delay:100ms">
@@ -120,13 +112,7 @@
 
                 <div class="grid-card">
 
-                    <!-- =========================================
-                         USER CONTENT
-                    ========================================= -->
-
                     <div class="grid-card-content">
-
-                        <!-- TOP -->
 
                         <div class="grid-card-top">
 
@@ -156,8 +142,6 @@
 
                         </div>
 
-                        <!-- BADGES -->
-
                         <div class="grid-card-meta">
 
                             @foreach (var role in roles)
@@ -178,13 +162,7 @@
 
                     </div>
 
-                    <!-- =========================================
-                         ACTIONS
-                    ========================================= -->
-
                     <div class="grid-card-actions">
-
-                        <!-- ADMIN -->
 
                         @{
                             var isAdmin = roles.Contains("ADMIN");
@@ -209,8 +187,6 @@
 
                         </form>
 
-                        <!-- LOCK -->
-
                         <form asp-action="ToggleLock"
                               method="post">
 
@@ -229,8 +205,6 @@
 
                         </form>
 
-                        <!-- DETAILS -->
-
                         <a asp-action="Details"
                            asp-route-id="@u.Id"
                            class="action-btn details"
@@ -239,8 +213,6 @@
                             <i data-lucide="eye"></i>
 
                         </a>
-
-                        <!-- DELETE -->
 
                         <form asp-action="Delete"
                               method="post"

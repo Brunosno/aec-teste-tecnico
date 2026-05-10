@@ -152,15 +152,21 @@ public class AddressController : Controller
 
         var builder = new StringBuilder();
 
-        builder.AppendLine("Id,Street,City,Uf,ZipCode");
+        builder.AppendLine(
+            "Rua,Numero,Complemento,Bairro,Cidade,UF,CEP"
+        );
 
         foreach (var address in addresses)
         {
-            builder.AppendLine($"{address.Id}," +
-                            $"{Escape(address.Street)}," +
-                            $"{Escape(address.City)}," +
-                            $"{Escape(address.Uf)}," +
-                            $"{Escape(address.ZipCode)}");
+            builder.AppendLine(
+                $"{Escape(address.Street)}," +
+                $"{address.Number}," +
+                $"{Escape(address.Complement)}," +
+                $"{Escape(address.Neighborhood)}," +
+                $"{Escape(address.City)}," +
+                $"{Escape(address.Uf)}," +
+                $"{Escape(address.ZipCode)}"
+            );
         }
 
         var fileName = $"enderecos_{user.UserName}_{DateTime.Now:yyyyMMddHHmmss}.csv";
