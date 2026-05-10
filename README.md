@@ -12,6 +12,57 @@ O projeto foi desenvolvido utilizando ASP.NET Core MVC, Entity Framework Core e 
 
 ---
 
+# Módulo Administrativo
+
+O sistema possui um módulo administrativo exclusivo para usuários com perfil `ADMIN`, permitindo o gerenciamento centralizado dos usuários cadastrados na aplicação.
+
+---
+
+## Funcionalidades do Administrador
+
+- Listagem de usuários cadastrados
+- Busca de usuários por nome ou e-mail
+- Visualização de detalhes do usuário
+- Alteração dinâmica de permissões administrativas
+- Bloqueio e desbloqueio de usuários
+- Exclusão de contas de usuário
+- Controle de acesso baseado em Roles (`ADMIN`)
+- Interface administrativa responsiva para gerenciamento dos usuários
+
+---
+
+## Gerenciamento de Permissões
+
+O administrador pode promover ou remover privilégios administrativos de qualquer usuário diretamente pela interface do sistema.
+
+A autenticação e autorização são realizadas utilizando:
+
+- ASP.NET Core Identity
+- Roles (`ADMIN`)
+- Attribute Authorization (`[Authorize(Roles = "ADMIN")]`)
+
+---
+
+## Controle de Bloqueio de Usuários
+
+O sistema permite que administradores bloqueiem usuários temporariamente através do mecanismo de `Lockout` do ASP.NET Identity.
+
+Quando bloqueado:
+- O usuário não consegue autenticar no sistema
+- O acesso é impedido até o desbloqueio manual pelo administrador
+
+---
+
+## Segurança Administrativa
+
+As rotas administrativas são protegidas utilizando autorização baseada em perfil:
+
+```csharp
+[Authorize(Roles = "ADMIN")]
+```
+
+---
+
 # Funcionalidades
 
 ## Usuário
@@ -229,7 +280,7 @@ Ao iniciar o sistema:
 
 | Papel | Usuário | Senha |
 |---|---|---|
-| Administrador | admin | Admin@123 |
+| Administrador | admin@admin.com | Admin@123 |
 
 ---
 
@@ -294,28 +345,32 @@ AEC-TESTE-TECNICO/
 
 ## Tabela Usuários
 
-| Campo |
-|---|
-| Id |
-| Nome |
-| Usuário |
-| Senha |
+| Campo | Descrição |
+|---|---|
+| Id | Identificador único do usuário |
+| Name | Nome completo do usuário |
+| UserName | Nome de usuário utilizado para login |
+| Email | E-mail do usuário |
+| PasswordHash | Senha criptografada pelo ASP.NET Identity |
+| PhoneNumber | Telefone do usuário |
+| Perfil | Perfil/permissão do usuário |
+| ImageUrl | URL da foto de perfil armazenada no MinIO |
 
 ---
 
 ## Tabela Endereços
 
-| Campo |
-|---|
-| Id |
-| CEP |
-| Logradouro |
-| Complemento |
-| Bairro |
-| Cidade |
-| UF |
-| Número |
-| Id do Usuário |
+| Campo | Descrição |
+|---|---|
+| Id | Identificador único do endereço |
+| ZipCode | CEP do endereço |
+| Street | Nome da rua/logradouro |
+| Number | Número do endereço |
+| Complement | Complemento do endereço |
+| Neighborhood | Bairro |
+| City | Cidade |
+| Uf | Unidade Federativa (UF) |
+| UserId | Identificador do usuário proprietário do endereço |
 
 ---
 
