@@ -1,4 +1,4 @@
-@model AecTesteTecnico.ViewModels.ProfileUpdateDTO;
+@model AecTesteTecnico.ViewModels.ProfileUpdateDTO
 
 @{
     Layout = "~/Views/Shared/_AccountLayout.cshtml";
@@ -6,145 +6,247 @@
 
 <div class="page-header animate-in">
     <h1 class="page-title">Meu Perfil</h1>
-    <p class="page-subtitle">Atualize suas informações pessoais</p>
+
+    <p class="page-subtitle">
+        Atualize suas informações pessoais
+    </p>
 </div>
 
-<div class="card-section animate-in" style="animation-delay:60ms">
-    <form id="profileForm" asp-action="Update" method="post" enctype="multipart/form-data">
+<div class="card-section animate-in"
+     style="animation-delay:60ms">
+
+    <form id="profileForm"
+          asp-action="Update"
+          method="post"
+          enctype="multipart/form-data">
+
         @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="ModelOnly"
+             class="validation-summary-errors">
+        </div>
 
         <div class="d-flex flex-column flex-sm-row gap-4 align-items-start">
 
             <div class="profile-avatar-wrap">
+
                 <img id="preview"
                      src="@(Model.ImageUrl ?? "/images/default-user.png")"
                      class="profile-avatar"
                      alt="Foto de perfil" />
 
                 <label style="cursor:pointer;margin-top:0.625rem;">
-                    <span class="btn btn-secondary btn-sm">Alterar foto</span>
-                    <input type="file" asp-for="Image" id="imageInput" style="display:none;" />
+
+                    <span class="btn btn-secondary btn-sm">
+                        Alterar foto
+                    </span>
+
+                    <input type="file"
+                           asp-for="Image"
+                           id="imageInput"
+                           style="display:none;" />
+
                 </label>
 
-                <div id="progressContainer" style="display:none;width:120px;margin-top:0.5rem;">
+                <div id="progressContainer"
+                     style="display:none;width:120px;margin-top:0.5rem;">
+
                     <div class="progress-wrap">
-                        <div class="progress-bar" id="progressBar"></div>
+                        <div class="progress-bar"
+                             id="progressBar">
+                        </div>
                     </div>
-                    <div class="progress-text" id="progressText">0%</div>
+
+                    <div class="progress-text"
+                         id="progressText">
+
+                        0%
+
+                    </div>
+
                 </div>
+
             </div>
 
             <div style="flex:1;min-width:0">
+
                 <div class="field-row">
-                    <label class="form-label">Nome</label>
-                    <input asp-for="Name" class="form-control" placeholder="Seu nome" />
+
+                    <label class="form-label">
+                        Nome
+                    </label>
+
+                    <input asp-for="Name"
+                           class="form-control"
+                           placeholder="Seu nome" />
+
+                    <span asp-validation-for="Name"
+                          class="field-error"></span>
+
                 </div>
 
                 <div class="field-row">
-                    <label class="form-label">Email</label>
-                    <input asp-for="Email" class="form-control" placeholder="seu@email.com" />
+
+                    <label class="form-label">
+                        Email
+                    </label>
+
+                    <input asp-for="Email"
+                           class="form-control"
+                           placeholder="seu@email.com" />
+
+                    <span asp-validation-for="Email"
+                          class="field-error"></span>
+
                 </div>
 
                 <div class="field-row">
-                    <label class="form-label">Telefone</label>
-                    <input asp-for="PhoneNumber" id="phoneInput" class="form-control" placeholder="(00) 00000-0000" />
+
+                    <label class="form-label">
+                        Telefone
+                    </label>
+
+                    <input asp-for="PhoneNumber"
+                           id="phoneInput"
+                           class="form-control"
+                           placeholder="(00) 00000-0000" />
+
+                    <span asp-validation-for="PhoneNumber"
+                          class="field-error"></span>
+
                 </div>
 
-                <hr class="divider" style="margin:1.25rem 0" />
+                <hr class="divider"
+                    style="margin:1.25rem 0" />
 
                 <div class="field-row">
-                    <label class="form-label">Nova senha <span class="text-faint">(opcional)</span></label>
-                    <input asp-for="NewPassword" type="password" class="form-control" placeholder="••••••••" />
+
+                    <label class="form-label">
+
+                        Nova senha
+                        <span class="text-faint">
+                            (opcional)
+                        </span>
+
+                    </label>
+
+                    <input asp-for="NewPassword"
+                           type="password"
+                           class="form-control"
+                           placeholder="••••••••" />
+
+                    <span asp-validation-for="NewPassword"
+                          class="field-error"></span>
+
                 </div>
 
                 <div class="field-row">
-                    <label class="form-label">Confirmar senha</label>
-                    <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="••••••••" />
+
+                    <label class="form-label">
+                        Confirmar senha
+                    </label>
+
+                    <input asp-for="ConfirmPassword"
+                           type="password"
+                           class="form-control"
+                           placeholder="••••••••" />
+
+                    <span asp-validation-for="ConfirmPassword"
+                          class="field-error"></span>
+
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-full mt-2" id="submitBtn">
+                <button type="submit"
+                        class="btn btn-primary btn-full mt-2"
+                        id="submitBtn">
+
                     Salvar alterações
+
                 </button>
+
             </div>
 
         </div>
+
     </form>
+
 </div>
 
 @section Scripts {
-<script>
-    const form = document.getElementById("profileForm");
-    const progressBar = document.getElementById("progressBar");
-    const progressContainer = document.getElementById("progressContainer");
-    const progressText = document.getElementById("progressText");
-    const submitBtn = document.getElementById("submitBtn");
-    const input = document.getElementById("imageInput");
-    const preview = document.getElementById("preview");
 
-    input.addEventListener("change", function () {
-        const file = this.files[0];
-        if (file) preview.src = URL.createObjectURL(file);
-    });
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 
-    const phoneInput = document.getElementById("phoneInput");
+    <script>
 
-    phoneInput.addEventListener("input", function (e) {
-        let value = e.target.value.replace(/\D/g, "");
-        if (value.length > 11) value = value.slice(0, 11);
-        if (value.length > 6) {
-            value = value.replace(/^(\d{2})(\d{5})(\d{0,4})$/, "($1) $2-$3");
-        } else if (value.length > 2) {
-            value = value.replace(/^(\d{2})(\d{0,5})$/, "($1) $2");
-        } else if (value.length > 0) {
-            value = value.replace(/^(\d*)$/, "($1");
-        }
-        e.target.value = value;
-    });
+        const form =
+            document.getElementById("profileForm");
 
-    form.addEventListener("submit", function (e) {
-        e.preventDefault();
+        const progressBar =
+            document.getElementById("progressBar");
 
-        const formData = new FormData(form);
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", form.action, true);
+        const progressContainer =
+            document.getElementById("progressContainer");
 
-        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
-        xhr.setRequestHeader("RequestVerificationToken", token);
+        const progressText =
+            document.getElementById("progressText");
 
-        progressBar.style.width = "0%";
-        progressText.innerText = "0%";
+        const submitBtn =
+            document.getElementById("submitBtn");
 
-        if (input.files.length > 0) {
-            progressContainer.style.display = "block";
-        }
+        const input =
+            document.getElementById("imageInput");
 
-        submitBtn.disabled = true;
+        const preview =
+            document.getElementById("preview");
 
-        xhr.upload.addEventListener("progress", function (e) {
-            if (e.lengthComputable) {
-                const percent = Math.round((e.loaded / e.total) * 100);
-                progressBar.style.width = percent + "%";
-                progressText.innerText = percent + "%";
+        input.addEventListener("change", function () {
+
+            const file = this.files[0];
+
+            if (file)
+            {
+                preview.src =
+                    URL.createObjectURL(file);
             }
         });
 
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                progressBar.style.width = "100%";
-                progressText.innerText = "100%";
-                setTimeout(() => location.reload(), 600);
-            } else {
-                alert("Erro ao salvar");
-                submitBtn.disabled = false;
+        const phoneInput =
+            document.getElementById("phoneInput");
+
+        phoneInput.addEventListener("input", function (e) {
+
+            let value =
+                e.target.value.replace(/\D/g, "");
+
+            if (value.length > 11)
+            {
+                value = value.slice(0, 11);
             }
-        };
 
-        xhr.onerror = function () {
-            alert("Erro na requisição");
-            submitBtn.disabled = false;
-        };
+            if (value.length > 6)
+            {
+                value = value.replace(
+                    /^(\d{2})(\d{5})(\d{0,4})$/,
+                    "($1) $2-$3"
+                );
+            }
+            else if (value.length > 2)
+            {
+                value = value.replace(
+                    /^(\d{2})(\d{0,5})$/,
+                    "($1) $2"
+                );
+            }
+            else if (value.length > 0)
+            {
+                value = value.replace(
+                    /^(\d*)$/,
+                    "($1"
+                );
+            }
 
-        xhr.send(formData);
-    });
-</script>
+            e.target.value = value;
+        });
+
+    </script>
 }

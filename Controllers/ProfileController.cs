@@ -28,15 +28,16 @@ public class ProfileController : Controller
 
         var dto = new ProfileUpdateDTO
         {
-            Name = user.Name,
-            Email = user.Email,
+            Name = user!.Name,
+            Email = user.Email!,
             PhoneNumber = user.PhoneNumber,
             ImageUrl = user.ImageUrl
         };
 
         if (!string.IsNullOrEmpty(dto.ImageUrl))
         {
-            dto.ImageUrl = await _minio.GetPresignedUrlAsync(dto.ImageUrl);
+            dto.ImageUrl =
+                await _minio.GetPresignedUrlAsync(dto.ImageUrl);
         }
 
         return View(dto);
@@ -48,40 +49,98 @@ public class ProfileController : Controller
     {
         var user = await _userManager.GetUserAsync(User);
 
+        if (user == null)
+            return RedirectToAction("Login", "Account");
+
         if (!ModelState.IsValid)
             return View("Index", dto);
 
         user.Name = dto.Name;
 
-        if (!string.IsNullOrEmpty(dto.PhoneNumber))
-        {
-            user.PhoneNumber = dto.PhoneNumber;
-        }
+        user.PhoneNumber = dto.PhoneNumber;
 
-        var emailResult = await _userManager.SetEmailAsync(user, dto.Email);
-        if (!emailResult.Succeeded)
+        if (user.Email != dto.Email)
         {
-            foreach (var error in emailResult.Errors)
-                ModelState.AddModelError("", error.Description);
+            var emailExists =
+                await _userManager.FindByEmailAsync(dto.Email);
 
-            return View("Index", dto);
+            if (emailExists != null &&
+                emailExists.Id != user.Id)
+            {
+                ModelState.AddModelError(
+                    "Email",
+                    "Este email já está em uso."
+                );
+
+                return View("Index", dto);
+            }
+
+            var emailResult =
+                await _userManager.SetEmailAsync(user, dto.Email);
+
+            if (!emailResult.Succeeded)
+            {
+                foreach (var error in emailResult.Errors)
+                {
+                    ModelState.AddModelError(
+                        "",
+                        error.Description
+                    );
+                }
+
+                return View("Index", dto);
+            }
+
+            user.UserName = dto.Email;
         }
 
         if (!string.IsNullOrEmpty(dto.NewPassword))
         {
             if (dto.NewPassword != dto.ConfirmPassword)
             {
-                ModelState.AddModelError("", "As senhas não coincidem");
+                ModelState.AddModelError(
+                    "ConfirmPassword",
+                    "As senhas não coincidem."
+                );
+
                 return View("Index", dto);
             }
 
-            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var passwordResult = await _userManager.ResetPasswordAsync(user, token, dto.NewPassword);
+            var samePassword =
+                await _userManager.CheckPasswordAsync(
+                    user,
+                    dto.NewPassword
+                );
+
+            if (samePassword)
+            {
+                ModelState.AddModelError(
+                    "NewPassword",
+                    "A nova senha não pode ser igual à senha atual."
+                );
+
+                return View("Index", dto);
+            }
+
+            var token =
+                await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            var passwordResult =
+                await _userManager.ResetPasswordAsync(
+                    user,
+                    token,
+                    dto.NewPassword
+                );
 
             if (!passwordResult.Succeeded)
             {
                 foreach (var error in passwordResult.Errors)
-                    ModelState.AddModelError("", error.Description);
+                {
+                    ModelState.AddModelError(
+                        "",
+                        error.Description
+                    );
+                }
 
                 return View("Index", dto);
             }
@@ -97,34 +156,50 @@ public class ProfileController : Controller
 
             if (!string.IsNullOrEmpty(user.ImageUrl))
             {
-                var name = user.ImageUrl.Split('/').Last();
-                var match = System.Text.RegularExpressions.Regex.Match(name, @"img(\d+)");
+                var name =
+                    user.ImageUrl.Split('/').Last();
+
+                var match =
+                    System.Text.RegularExpressions.Regex.Match(
+                        name,
+                        @"img(\d+)"
+                    );
 
                 if (match.Success)
-                    imageIndex = int.Parse(match.Groups[1].Value) + 1;
+                {
+                    imageIndex =
+                        int.Parse(match.Groups[1].Value) + 1;
+                }
 
                 await _minio.DeleteAsync(user.ImageUrl);
             }
 
-            user.ImageUrl = await _minio.UploadAsync(
-                dto.Image,
-                "users",
-                user.UserName,
-                user.Id,
-                imageIndex
-            );
+            user.ImageUrl =
+                await _minio.UploadAsync(
+                    dto.Image,
+                    "users",
+                    user.UserName!,
+                    user.Id,
+                    imageIndex
+                );
         }
 
-        var updateResult = await _userManager.UpdateAsync(user);
+        var updateResult =
+            await _userManager.UpdateAsync(user);
 
         if (!updateResult.Succeeded)
         {
             foreach (var error in updateResult.Errors)
-                ModelState.AddModelError("", error.Description);
+            {
+                ModelState.AddModelError(
+                    "",
+                    error.Description
+                );
+            }
 
             return View("Index", dto);
         }
 
-        return RedirectToAction("Index");
+        return RedirectToAction(nameof(Index));
     }
 }
