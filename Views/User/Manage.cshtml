@@ -16,6 +16,19 @@
 
 </div>
 
+@if (TempData["Error"] != null)
+{
+    <div class="alert-custom alert-danger animate-in">
+
+        <i data-lucide="alert-circle"></i>
+
+        <span>
+            @TempData["Error"]
+        </span>
+
+    </div>
+}
+
 <div class="card-section animate-in" style="animation-delay:60ms">
 
     <div class="card-section-header mb-4">

@@ -19,20 +19,23 @@
 
 <div class="card-section animate-in">
 
-    <form asp-action="Create" method="post">
+    <form asp-action="Create" method="post" novalidate>
 
         @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="ModelOnly"
+             class="validation-summary-errors">
+        </div>
 
         <div class="form-grid">
 
             <div class="field-row">
 
-                <label class="form-label">
-                    CEP
-                </label>
+                <label asp-for="ZipCode" class="form-label"></label>
 
                 <input asp-for="ZipCode"
                        id="zipCode"
+                       maxlength="9"
                        class="form-control"
                        placeholder="00000-000" />
 
@@ -43,12 +46,12 @@
 
             <div class="field-row">
 
-                <label class="form-label">
-                    Rua
-                </label>
+                <label asp-for="Street"
+                       class="form-label"></label>
 
                 <input asp-for="Street"
                        id="street"
+                       maxlength="150"
                        class="form-control"
                        placeholder="Nome da rua" />
 
@@ -59,12 +62,13 @@
 
             <div class="field-row">
 
-                <label class="form-label">
-                    Número
-                </label>
+                <label asp-for="Number"
+                       class="form-label"></label>
 
                 <input asp-for="Number"
                        type="number"
+                       min="1"
+                       max="999999"
                        class="form-control"
                        placeholder="123" />
 
@@ -75,11 +79,11 @@
 
             <div class="field-row">
 
-                <label class="form-label">
-                    Complemento
-                </label>
+                <label asp-for="Complement"
+                       class="form-label"></label>
 
                 <input asp-for="Complement"
+                       maxlength="100"
                        class="form-control"
                        placeholder="Apartamento, bloco..." />
 
@@ -90,12 +94,12 @@
 
             <div class="field-row">
 
-                <label class="form-label">
-                    Bairro
-                </label>
+                <label asp-for="Neighborhood"
+                       class="form-label"></label>
 
                 <input asp-for="Neighborhood"
                        id="neighborhood"
+                       maxlength="100"
                        class="form-control"
                        placeholder="Nome do bairro" />
 
@@ -106,12 +110,12 @@
 
             <div class="field-row">
 
-                <label class="form-label">
-                    Cidade
-                </label>
+                <label asp-for="City"
+                       class="form-label"></label>
 
                 <input asp-for="City"
                        id="city"
+                       maxlength="100"
                        class="form-control"
                        placeholder="Cidade" />
 
@@ -122,12 +126,12 @@
 
             <div class="field-row">
 
-                <label class="form-label">
-                    UF
-                </label>
+                <label asp-for="Uf"
+                       class="form-label"></label>
 
                 <input asp-for="Uf"
                        id="uf"
+                       maxlength="2"
                        class="form-control"
                        placeholder="TO" />
 
@@ -172,6 +176,7 @@
         const cityInput = document.getElementById('city');
         const ufInput = document.getElementById('uf');
 
+        // Máscara CEP
         cepInput.addEventListener('input', function (e) {
 
             let value = e.target.value.replace(/\D/g, '');
@@ -187,6 +192,16 @@
             e.target.value = value;
         });
 
+        // UF maiúscula
+        ufInput.addEventListener('input', function () {
+
+            this.value =
+                this.value
+                    .replace(/[^a-zA-Z]/g, '')
+                    .toUpperCase();
+        });
+
+        // Busca automática CEP
         cepInput.addEventListener('blur', async function () {
 
             const cep =

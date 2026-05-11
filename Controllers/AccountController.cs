@@ -105,7 +105,27 @@ public class AccountController : Controller
 
         if (result.Succeeded)
         {
-            return RedirectToAction("Index", "Profile");
+            return RedirectToAction("Index", "Home");
+        }
+
+        if (result.IsLockedOut)
+            {
+            ModelState.AddModelError(
+                "",
+                "Seu acesso não está permitido no momento."
+            );
+
+            return View(model);
+        }
+
+        if (result.IsNotAllowed)
+        {
+            ModelState.AddModelError(
+                "",
+                "Sua conta foi bloqueada temporariamente devido a várias tentativas inválidas. Tente novamente mais tarde."
+            );
+
+            return View(model);
         }
 
         ModelState.AddModelError("", "Usuário ou senha inválidos");

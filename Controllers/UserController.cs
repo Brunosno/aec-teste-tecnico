@@ -85,21 +85,34 @@ public class UserController : Controller
         if (user == null)
             return NotFound();
 
-        var isAdmin = await _userManager.IsInRoleAsync(user, "ADMIN");
+        var isAdmin =
+            await _userManager.IsInRoleAsync(user, "ADMIN");
 
         if (isAdmin)
         {
             await _userManager.RemoveFromRoleAsync(user, "ADMIN");
+
+            await _userManager.AddToRoleAsync(user, "CLIENT");
+
+            user.Perfil = Perfil.CLIENT;
         }
         else
         {
             if (!await _roleManager.RoleExistsAsync("ADMIN"))
             {
-                await _roleManager.CreateAsync(new IdentityRole("ADMIN"));
+                await _roleManager.CreateAsync(
+                    new IdentityRole("ADMIN")
+                );
             }
 
+            await _userManager.RemoveFromRoleAsync(user, "CLIENT");
+
             await _userManager.AddToRoleAsync(user, "ADMIN");
+
+            user.Perfil = Perfil.ADMIN;
         }
+
+        await _userManager.UpdateAsync(user);
 
         return RedirectToAction(nameof(Manage));
     }
@@ -113,13 +126,26 @@ public class UserController : Controller
         if (user == null)
             return NotFound();
 
-        if (user.LockoutEnd != null && user.LockoutEnd > DateTimeOffset.Now)
+        var isAdmin =
+            await _userManager.IsInRoleAsync(user, "ADMIN");
+
+        if (isAdmin)
+        {
+            TempData["Error"] =
+                "Usuários administradores não podem ser bloqueados.";
+
+            return RedirectToAction(nameof(Manage));
+        }
+
+        if (user.LockoutEnd != null &&
+            user.LockoutEnd > DateTimeOffset.Now)
         {
             user.LockoutEnd = null;
         }
         else
         {
-            user.LockoutEnd = DateTimeOffset.Now.AddYears(100);
+            user.LockoutEnd =
+                DateTimeOffset.Now.AddYears(100);
         }
 
         await _userManager.UpdateAsync(user);

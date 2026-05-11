@@ -16,71 +16,234 @@
 
 <div class="card-section animate-in">
 
-    <form asp-action="Edit" method="post">
+    <form asp-action="Edit" method="post" novalidate>
 
         @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="ModelOnly"
+             class="validation-summary-errors">
+        </div>
 
         <div class="form-grid">
 
             <div class="field-row">
-                <label class="form-label">CEP</label>
+
+                <label asp-for="ZipCode" class="form-label"></label>
+
                 <input asp-for="ZipCode"
-                       class="form-control" />
+                       id="zipCode"
+                       maxlength="9"
+                       class="form-control"
+                       placeholder="00000-000" />
+
+                <span asp-validation-for="ZipCode"
+                      class="field-error"></span>
+
             </div>
 
             <div class="field-row">
-                <label class="form-label">Rua</label>
+
+                <label asp-for="Street"
+                       class="form-label"></label>
+
                 <input asp-for="Street"
-                       class="form-control" />
+                       id="street"
+                       maxlength="150"
+                       class="form-control"
+                       placeholder="Nome da rua" />
+
+                <span asp-validation-for="Street"
+                      class="field-error"></span>
+
             </div>
 
             <div class="field-row">
-                <label class="form-label">Número</label>
+
+                <label asp-for="Number"
+                       class="form-label"></label>
+
                 <input asp-for="Number"
-                       class="form-control" />
+                       type="number"
+                       min="1"
+                       max="999999"
+                       class="form-control"
+                       placeholder="123" />
+
+                <span asp-validation-for="Number"
+                      class="field-error"></span>
+
             </div>
 
             <div class="field-row">
-                <label class="form-label">
-                    Complemento
-                </label>
+
+                <label asp-for="Complement"
+                       class="form-label"></label>
 
                 <input asp-for="Complement"
-                       class="form-control" />
+                       maxlength="100"
+                       class="form-control"
+                       placeholder="Apartamento, bloco..." />
+
+                <span asp-validation-for="Complement"
+                      class="field-error"></span>
+
             </div>
 
             <div class="field-row">
-                <label class="form-label">Bairro</label>
+
+                <label asp-for="Neighborhood"
+                       class="form-label"></label>
+
                 <input asp-for="Neighborhood"
-                       class="form-control" />
+                       id="neighborhood"
+                       maxlength="100"
+                       class="form-control"
+                       placeholder="Nome do bairro" />
+
+                <span asp-validation-for="Neighborhood"
+                      class="field-error"></span>
+
             </div>
 
             <div class="field-row">
-                <label class="form-label">Cidade</label>
+
+                <label asp-for="City"
+                       class="form-label"></label>
+
                 <input asp-for="City"
-                       class="form-control" />
+                       id="city"
+                       maxlength="100"
+                       class="form-control"
+                       placeholder="Cidade" />
+
+                <span asp-validation-for="City"
+                      class="field-error"></span>
+
             </div>
 
             <div class="field-row">
-                <label class="form-label">UF</label>
+
+                <label asp-for="Uf"
+                       class="form-label"></label>
+
                 <input asp-for="Uf"
-                       class="form-control" />
+                       id="uf"
+                       maxlength="2"
+                       class="form-control"
+                       placeholder="TO" />
+
+                <span asp-validation-for="Uf"
+                      class="field-error"></span>
+
             </div>
 
         </div>
 
         <div class="form-actions">
+
             <button type="submit"
                     class="btn btn-primary">
-                Salvar alterações
+
+                Salvar endereço
+
             </button>
 
             <a asp-action="Index"
                class="btn btn-secondary">
+
                 Cancelar
+
             </a>
+
         </div>
 
     </form>
 
 </div>
+
+@section Scripts {
+
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script>
+
+        const cepInput = document.getElementById('zipCode');
+        const streetInput = document.getElementById('street');
+        const neighborhoodInput = document.getElementById('neighborhood');
+        const cityInput = document.getElementById('city');
+        const ufInput = document.getElementById('uf');
+
+        // Máscara CEP
+        cepInput.addEventListener('input', function (e) {
+
+            let value = e.target.value.replace(/\D/g, '');
+
+            if (value.length > 5) {
+
+                value =
+                    value.substring(0, 5)
+                    + '-'
+                    + value.substring(5, 8);
+            }
+
+            e.target.value = value;
+        });
+
+        // UF maiúscula
+        ufInput.addEventListener('input', function () {
+
+            this.value =
+                this.value
+                    .replace(/[^a-zA-Z]/g, '')
+                    .toUpperCase();
+        });
+
+        // Busca automática CEP
+        cepInput.addEventListener('blur', async function () {
+
+            const cep =
+                cepInput.value.replace(/\D/g, '');
+
+            if (cep.length !== 8)
+                return;
+
+            try {
+
+                const response =
+                    await fetch(
+                        `https://viacep.com.br/ws/${cep}/json/`
+                    );
+
+                const data =
+                    await response.json();
+
+                if (data.erro) {
+
+                    alert("CEP não encontrado.");
+                    return;
+                }
+
+                streetInput.value =
+                    data.logradouro || "";
+
+                neighborhoodInput.value =
+                    data.bairro || "";
+
+                cityInput.value =
+                    data.localidade || "";
+
+                ufInput.value =
+                    data.uf || "";
+
+            }
+            catch (error) {
+
+                console.error(
+                    "Erro ao buscar CEP:",
+                    error
+                );
+            }
+        });
+
+    </script>
+}
